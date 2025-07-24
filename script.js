@@ -1,28 +1,69 @@
-const date = document.getElementById("date");
+let date = document.querySelector('#date');
+let newDate = new Date();
+date.textContent = newDate.toDateString();
 
-const d = new Date();
-const currDate = d.toDateString();
-date.innerText = currDate;
+let input = document.querySelector('#input-task');
+let addBtn = document.querySelector('#add-btn');
 
-// ================================
-let taskList = document.getElementById("task-list");
-const addBtn = document.getElementById('add-btn');
-function saveTask() {
-  let inputTask = document.getElementById("input-task").value;
-    taskList.innerHTML += `
-      <li>${inputTask} <span id  = "remove-btn">Remove</span></li>
-    `
-}
+let tasks =[];
 
-
-
-addBtn.addEventListener('click',(e) =>{
+addBtn.addEventListener('click',(e)=>{
     e.preventDefault();
-    saveTask();
-})
+    let li = document.createElement('li');
+    li.textContent = input.value;
+    if(input.value === ""){
+        return;
+    }
+    else{
+ tasks.push(input.value);
+    localStorage.setItem('task',JSON.stringify(tasks));
 
-const remove = document.getElementById('remove-btn');
+    let span = document.createElement('span');
+    span.textContent = 'remove';
 
-remove.addEventListener('click',(e) =>{
-  e.target.parent.remove();  
+    li.appendChild(span);
+
+
+
+    let taskList = document.querySelector('#task-list');
+    taskList.appendChild(li)
+
+
+    span.addEventListener('click',()=>{
+        li.remove()
+    })
+
+    li.addEventListener('dblclick',()=>{
+        li.style.textDecoration = 'line-through';
+    })
+
+    }
+   
+    input.value = '';
 })
+window.addEventListener('DOMContentLoaded', () => {
+    let savedTasks = JSON.parse(localStorage.getItem('task')) || [];
+
+    savedTasks.forEach(taskText => {
+        let li = document.createElement('li');
+        li.textContent = taskText;
+
+        let span = document.createElement('span');
+        span.textContent = 'remove';
+        li.appendChild(span);
+
+        span.addEventListener('click', () => {
+            li.remove();
+            // Remove from tasks array and update localStorage
+            tasks = tasks.filter(task => task !== taskText);
+            localStorage.setItem('task', JSON.stringify(tasks));
+        });
+
+        li.addEventListener('dblclick', () => {
+            li.style.textDecoration = 'line-through';
+        });
+
+        document.querySelector('#task-list').appendChild(li);
+        tasks.push(taskText); // Re-populate the array
+    });
+});
