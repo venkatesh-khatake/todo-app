@@ -17,6 +17,3 @@ A simple and intuitive To-Do List application that helps users manage daily task
 - 🎨 Clean and responsive user interface
 
 ---
-
-## 📁 Folder Structure
-
